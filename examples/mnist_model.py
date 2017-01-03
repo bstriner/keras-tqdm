@@ -33,12 +33,12 @@ def mnist_data():
     return [mnist_process(*d) for d in data]
 
 
-def mnist_test(verbose=1, callbacks=[]):
+def mnist_model(verbose=1, callbacks=[]):
     m = build_model()
     (xtrain, ytrain), (xtest, ytest) = mnist_data()
-    m.fit(xtrain, ytrain, validation_data=(xtest, ytest), nb_epoch=20, batch_size=32, verbose=verbose,
+    m.fit(xtrain, ytrain, validation_data=(xtest, ytest), nb_epoch=10, batch_size=32, verbose=verbose,
           callbacks=callbacks)
 
 
 if __name__ == "__main__":
-    mnist_test()
+    mnist_model()
