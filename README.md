@@ -3,6 +3,9 @@ Keras integration with TQDM progress bars.
 * TQDM supports nested progress bars. If you have Keras fit and predict loops within an outer TQDM loop, the
 nested loops will display properly.
 * TQDM supports Jupyter/IPython notebooks.
+* TQDM looks great!
+
+![Keras TQDM](https://github.com/bstriner/keras-tqdm/raw/master/docs/images/ipynb.png)
 
 ##Installation
 ``` 
@@ -41,3 +44,7 @@ from tqdm import tqdm
 for i in tqdm(range(10)):
     model.fit(x, y, callbacks = [TQDMCallback()])
 ```
+
+##Questions?
+
+Please feel free to submit PRs and issues. Comments, questions, and requests are welcome. If you need more control, subclass `TQDMCallback` and override the `tqdm ` function.
