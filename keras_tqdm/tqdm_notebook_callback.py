@@ -11,14 +11,14 @@ class TQDMNotebookCallback(TQDMCallback):
                  metric_format="{name}: {value:0.3f}",
                  separator=", ",
                  leave_inner=True,
-                 file=sys.stderr):
+                 output_file=sys.stderr):
         super(TQDMNotebookCallback, self).__init__(outer_description=outer_description,
                                                    inner_description_initial=inner_description_initial,
                                                    inner_description_update=inner_description_update,
                                                    metric_format=metric_format,
                                                    separator=separator,
                                                    leave_inner=leave_inner,
-                                                   file=file)
+                                                   output_file=output_file)
 
     def tqdm(self, desc, total, leave):
         """

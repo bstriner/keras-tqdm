@@ -1,42 +1,54 @@
 
-# Keras Progress Bars
+Keras Progress Bars
+===================
 
-The following examples show two different `keras_tqdm` progress bars.
-* TQDM notebook widget
-* TQDM console output
+The following examples show two different ``keras_tqdm`` progress bars.
+\* TQDM notebook widget \* TQDM console output
 
-To use `keras_tqdm` progress bars in your own code, just add `TQDMCallback` or `TQDMNotebookCallback` to the `callbacks` passed to `model.fit`. Set `verbose=0` to suppress the built-in progress bars.
+To use ``keras_tqdm`` progress bars in your own code, just add
+``TQDMCallback`` or ``TQDMNotebookCallback`` to the ``callbacks`` passed
+to ``model.fit``. Set ``verbose=0`` to suppress the built-in progress
+bars.
 
-## MNIST Example
+MNIST Example
+-------------
 
 In this experiment, we train a Keras model on the MNIST dataset.
 
+.. code:: ipython2
 
-```python
-from mnist_model import mnist_model
-from keras_tqdm import TQDMCallback, TQDMNotebookCallback
-```
+    from mnist_model import mnist_model
+    from keras_tqdm import TQDMCallback, TQDMNotebookCallback
+
+
+.. parsed-literal::
 
     Using Theano backend.
     Using gpu device 0: GeForce GTX 770M (CNMeM is enabled with initial size: 80.0% of memory, cuDNN 5005)
     
 
-### TQDM Progress Bar (ipywidget)
+TQDM Progress Bar (ipywidget)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: ipython2
+
+    mnist_model(0, [TQDMNotebookCallback()])
 
 
-```python
-mnist_model(0, [TQDMNotebookCallback()])
-```
+.. parsed-literal::
 
     
     
 
-### TQDM Progress Bar (text)
+TQDM Progress Bar (text)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: ipython2
+
+    mnist_model(0, [TQDMCallback()])
 
 
-```python
-mnist_model(0, [TQDMCallback()])
-```
+.. parsed-literal::
 
     Training:   0%|                                                             | 0/10 [00:00<?, ?it/s]
     Epoch: 0:   0%|                                                           | 0/1875 [00:00<?, ?it/s]
