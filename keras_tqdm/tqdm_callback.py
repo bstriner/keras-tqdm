@@ -1,6 +1,6 @@
 from keras.callbacks import Callback
 from tqdm import tqdm
-import sys
+from sys import stderr
 from math import ceil
 import six
 import numpy as np
@@ -12,35 +12,68 @@ class TQDMCallback(Callback):
                  inner_description_update="Epoch: {epoch} - {metrics}",
                  metric_format="{name}: {value:0.3f}",
                  separator=", ",
-                 file=sys.stderr):
+                 leave_inner=True,
+                 leave_outer=True,
+                 output_file=stderr):
         """
         Construct a callback that will create and update progress bars.
+
         :param outer_description: string for outer progress bar
         :param inner_description_initial: initial format for epoch ("Epoch: {epoch}")
         :param inner_description_update: format after metrics collected ("Epoch: {epoch} - {metrics}")
         :param metric_format: format for each metric name/value pair ("{name}: {value:0.3f}")
         :param separator: separator between metrics (", ")
-        :param file:
+        :param leave_inner: True to leave inner bars
+        :param leave_outer: True to leave outer bars
+        :param output_file: output file (default sys.stderr)
         """
         self.outer_description = outer_description
         self.inner_description_initial = inner_description_initial
         self.inner_description_update = inner_description_update
         self.metric_format = metric_format
         self.separator = separator
-        self.file = file
+        self.leave_inner = leave_inner
+        self.leave_outer = leave_outer
+        self.output_file = output_file
         self.tqdm_outer = None
         self.tqdm_inner = None
         self.epoch = None
         self.running_logs = None
+        self.batch_count = None
 
-    def tqdm(self, desc, total):
-        return tqdm(desc=desc, total=total)
+    def tqdm(self, desc, total, leave):
+        """
+        Extension point. Override to provide custom options to tqdm initializer.
+        :param desc: Description string
+        :param total: Total number of updates
+        :param leave: Leave progress bar when done
+        :return: new progress bar
+        """
+        return tqdm(desc=desc, total=total, leave=leave, file=self.output_file)
+
+    def build_tqdm_outer(self, desc, total):
+        """
+        Extension point. Override to provide custom options to outer progress bars (Epoch loop)
+        :param desc: Description
+        :param total: Number of epochs
+        :return: new progress bar
+        """
+        return self.tqdm(desc=desc, total=total, leave=self.leave_outer)
+
+    def build_tqdm_inner(self, desc, total):
+        """
+        Extension point. Override to provide custom options to inner progress bars (Batch loop)
+        :param desc: Description
+        :param total: Number of batches
+        :return: new progress bar
+        """
+        return self.tqdm(desc=desc, total=total, leave=self.leave_inner)
 
     def on_epoch_begin(self, epoch, logs={}):
         self.epoch = epoch
         desc = self.inner_description_initial.format(epoch=self.epoch)
-        batch_count = int(ceil(self.params['nb_sample'] / self.params['batch_size']))
-        self.tqdm_inner = self.tqdm(desc=desc, total=batch_count + 1)
+        self.batch_count = int(ceil(self.params['nb_sample'] / self.params['batch_size']))
+        self.tqdm_inner = self.build_tqdm_inner(desc=desc, total=self.batch_count)
         self.running_logs = {}
 
     def on_epoch_end(self, epoch, logs={}):
@@ -58,14 +91,15 @@ class TQDMCallback(Callback):
         pass
 
     def on_batch_end(self, batch, logs={}):
-        self.append_logs(logs)
-        metrics = self.format_metrics(self.running_logs)
-        desc = self.inner_description_update.format(epoch=self.epoch, metrics=metrics)
-        self.tqdm_inner.desc = desc
-        self.tqdm_inner.update(1)
+        if batch < self.batch_count - 1:
+            self.append_logs(logs)
+            metrics = self.format_metrics(self.running_logs)
+            desc = self.inner_description_update.format(epoch=self.epoch, metrics=metrics)
+            self.tqdm_inner.desc = desc
+            self.tqdm_inner.update(1)
 
     def on_train_begin(self, logs={}):
-        self.tqdm_outer = self.tqdm(desc=self.outer_description, total=self.params["nb_epoch"])
+        self.tqdm_outer = self.build_tqdm_outer(desc=self.outer_description, total=self.params["nb_epoch"])
 
     def on_train_end(self, logs={}):
         self.tqdm_outer.close()
