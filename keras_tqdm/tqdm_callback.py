@@ -14,6 +14,8 @@ class TQDMCallback(Callback):
                  separator=", ",
                  leave_inner=True,
                  leave_outer=True,
+                 show_inner=True,
+                 show_outer=True,
                  output_file=stderr):
         """
         Construct a callback that will create and update progress bars.
@@ -25,6 +27,8 @@ class TQDMCallback(Callback):
         :param separator: separator between metrics (", ")
         :param leave_inner: True to leave inner bars
         :param leave_outer: True to leave outer bars
+        :param show_inner: False to hide inner bars
+        :param show_outer: False to hide outer bar
         :param output_file: output file (default sys.stderr)
         """
         self.outer_description = outer_description
@@ -34,6 +38,8 @@ class TQDMCallback(Callback):
         self.separator = separator
         self.leave_inner = leave_inner
         self.leave_outer = leave_outer
+        self.show_inner = show_inner
+        self.show_outer = show_outer
         self.output_file = output_file
         self.tqdm_outer = None
         self.tqdm_inner = None
@@ -73,19 +79,22 @@ class TQDMCallback(Callback):
         self.epoch = epoch
         desc = self.inner_description_initial.format(epoch=self.epoch)
         self.batch_count = int(ceil(self.params['nb_sample'] / self.params['batch_size']))
-        self.tqdm_inner = self.build_tqdm_inner(desc=desc, total=self.batch_count)
+        if self.show_inner:
+            self.tqdm_inner = self.build_tqdm_inner(desc=desc, total=self.batch_count)
         self.running_logs = {}
 
     def on_epoch_end(self, epoch, logs={}):
         metrics = self.format_metrics(logs)
         desc = self.inner_description_update.format(epoch=epoch, metrics=metrics)
-        self.tqdm_inner.desc = desc
-        # set miniters and mininterval to 0 so last update displays
-        self.tqdm_inner.miniters = 0
-        self.tqdm_inner.mininterval = 0
-        self.tqdm_inner.update(1)
-        self.tqdm_inner.close()
-        self.tqdm_outer.update(1)
+        if self.show_inner:
+            self.tqdm_inner.desc = desc
+            # set miniters and mininterval to 0 so last update displays
+            self.tqdm_inner.miniters = 0
+            self.tqdm_inner.mininterval = 0
+            self.tqdm_inner.update(1)
+            self.tqdm_inner.close()
+        if self.show_outer:
+            self.tqdm_outer.update(1)
 
     def on_batch_begin(self, batch, logs={}):
         pass
@@ -95,14 +104,17 @@ class TQDMCallback(Callback):
             self.append_logs(logs)
             metrics = self.format_metrics(self.running_logs)
             desc = self.inner_description_update.format(epoch=self.epoch, metrics=metrics)
-            self.tqdm_inner.desc = desc
-            self.tqdm_inner.update(1)
+            if self.show_inner:
+                self.tqdm_inner.desc = desc
+                self.tqdm_inner.update(1)
 
     def on_train_begin(self, logs={}):
-        self.tqdm_outer = self.build_tqdm_outer(desc=self.outer_description, total=self.params["nb_epoch"])
+        if self.show_outer:
+            self.tqdm_outer = self.build_tqdm_outer(desc=self.outer_description, total=self.params["nb_epoch"])
 
     def on_train_end(self, logs={}):
-        self.tqdm_outer.close()
+        if self.show_outer:
+            self.tqdm_outer.close()
 
     def append_logs(self, logs):
         metrics = self.params['metrics']
