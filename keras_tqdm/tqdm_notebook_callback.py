@@ -12,7 +12,7 @@ class TQDMNotebookCallback(TQDMCallback):
                  separator=", ",
                  leave_inner=False,
                  leave_outer=True,
-                 output_file=sys.stderr):
+                 output_file=sys.stderr, **kwargs):
         super(TQDMNotebookCallback, self).__init__(outer_description=outer_description,
                                                    inner_description_initial=inner_description_initial,
                                                    inner_description_update=inner_description_update,
@@ -20,7 +20,7 @@ class TQDMNotebookCallback(TQDMCallback):
                                                    separator=separator,
                                                    leave_inner=leave_inner,
                                                    leave_outer=leave_outer,
-                                                   output_file=output_file)
+                                                   output_file=output_file, **kwargs)
 
     def tqdm(self, desc, total, leave):
         """
