@@ -1,12 +1,12 @@
 from setuptools import setup, find_packages
 
 setup(name='keras_tqdm',
-      version='1.0.4',
-      install_requires=['keras', 'tqdm'],
+      version='1.0.5',
+      install_requires=['Keras', 'tqdm'],
       author="Ben Striner",
       author_email="bstriner@gmail.com",
       url="https://github.com/bstriner/keras-tqdm",
-      download_url='https://github.com/bstriner/keras-tqdm/tarball/v1.0.4',
+      download_url='https://github.com/bstriner/keras-tqdm/tarball/v1.0.5',
       description="Train Keras models with TQDM progress bars and IPython support",
       keywords=['keras', 'tqdm', 'progress', 'progressbar', 'ipython', 'jupyter'],
       license='MIT',
