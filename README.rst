@@ -51,7 +51,7 @@ Development release
     python setup.py install
 
 Basic usage
-----------------
+-----------
 
 It's very easy to use Keras TQDM. The only required change is to remove default messages (`verbose=0`) and add a callback to ``model.fit``. The rest happens automatically! For Jupyter Notebook required code modification is as simple as:
 
@@ -70,8 +70,8 @@ For plain text mode (e.g. for Python run from command line)
     model.fit(X_train, Y_train, verbose=0, callbacks=[TQDMCallback()])
 
 
-Advanced usege
-----------
+Advanced usage
+--------------
 
 Use ``keras_tqdm`` to utilize TQDM progress bars for Keras fit loops.
 ``keras_tqdm`` loops can be nested inside TQDM loops to display nested progress bars (although you can use them
