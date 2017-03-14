@@ -78,7 +78,12 @@ class TQDMCallback(Callback):
     def on_epoch_begin(self, epoch, logs={}):
         self.epoch = epoch
         desc = self.inner_description_initial.format(epoch=self.epoch)
-        self.batch_count = int(ceil(self.params['nb_sample'] / self.params['batch_size']))
+        if 'steps' in self.params:
+            self.batch_count = self.params['steps']
+        elif 'samples' in self.params:
+            self.batch_count = int(ceil(self.params['samples'] / self.params['batch_size']))
+        else:
+            self.batch_count = int(ceil(self.params['nb_sample'] / self.params['batch_size']))
         if self.show_inner:
             self.tqdm_inner = self.build_tqdm_inner(desc=desc, total=self.batch_count)
         self.running_logs = {}
@@ -110,7 +115,10 @@ class TQDMCallback(Callback):
 
     def on_train_begin(self, logs={}):
         if self.show_outer:
-            self.tqdm_outer = self.build_tqdm_outer(desc=self.outer_description, total=self.params["nb_epoch"])
+            epochs = (self.params['epochs'] if 'epochs' in self.params
+                      else self.params['nb_epoch'])
+            self.tqdm_outer = self.build_tqdm_outer(desc=self.outer_description,
+                                                    total=epochs)
 
     def on_train_end(self, logs={}):
         if self.show_outer:
