@@ -1,8 +1,7 @@
 from setuptools import setup, find_packages
 
 long_description = open('README.rst').read()
-# import re
-# long_description = re.sub("\r\n", "\n", long_description)
+
 setup(name='keras_tqdm',
       version='1.0.7',
       install_requires=['Keras', 'tqdm'],

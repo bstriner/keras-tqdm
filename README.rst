@@ -46,9 +46,14 @@ Stable release
 Development release
 ::
 
+   pip install git+https://github.com/bstriner/keras-tqdm.git --upgrade --no-deps
+
+Development mode (changes to source take effect without reinstalling)
+::
+
     git clone https://github.com/bstriner/keras-tqdm.git
     cd keras-tqdm
-    python setup.py install
+    python setup.py develop
 
 Basic usage
 -----------
