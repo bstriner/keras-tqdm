@@ -45,8 +45,7 @@ class TQDMCallback(Callback):
         self.tqdm_inner = None
         self.epoch = None
         self.running_logs = None
-        self.sample_count = None
-        self.batch_size = None
+        self.batch_count = None
 
     def tqdm(self, desc, total, leave):
         """
@@ -79,9 +78,9 @@ class TQDMCallback(Callback):
     def on_epoch_begin(self, epoch, logs={}):
         self.epoch = epoch
         desc = self.inner_description_initial.format(epoch=self.epoch)
-        self.sample_count = 0
+        self.batch_count = int(ceil(self.params['nb_sample'] / self.params['batch_size']))
         if self.show_inner:
-            self.tqdm_inner = self.build_tqdm_inner(desc=desc, total=self.params['nb_sample'])
+            self.tqdm_inner = self.build_tqdm_inner(desc=desc, total=self.batch_count)
         self.running_logs = {}
 
     def on_epoch_end(self, epoch, logs={}):
@@ -92,23 +91,22 @@ class TQDMCallback(Callback):
             # set miniters and mininterval to 0 so last update displays
             self.tqdm_inner.miniters = 0
             self.tqdm_inner.mininterval = 0
-            self.tqdm_inner.update(self.batch_size)
+            self.tqdm_inner.update(1)
             self.tqdm_inner.close()
         if self.show_outer:
             self.tqdm_outer.update(1)
 
     def on_batch_begin(self, batch, logs={}):
-        self.batch_size = logs['size']
-        self.sample_count = self.sample_count + self.batch_size
+        pass
 
     def on_batch_end(self, batch, logs={}):
-        if self.sample_count < self.params['nb_sample'] - 1:
+        if batch < self.batch_count - 1:
             self.append_logs(logs)
             metrics = self.format_metrics(self.running_logs)
             desc = self.inner_description_update.format(epoch=self.epoch, metrics=metrics)
             if self.show_inner:
                 self.tqdm_inner.desc = desc
-                self.tqdm_inner.update(self.batch_size)
+                self.tqdm_inner.update(1)
 
     def on_train_begin(self, logs={}):
         if self.show_outer:
