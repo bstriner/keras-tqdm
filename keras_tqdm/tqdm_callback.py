@@ -78,13 +78,13 @@ class TQDMCallback(Callback):
     def on_epoch_begin(self, epoch, logs={}):
         self.epoch = epoch
         desc = self.inner_description_initial.format(epoch=self.epoch)
-        self.mode = 0 #samples
+        self.mode = 0  # samples
         if 'samples' in self.params:
             self.inner_total = self.params['samples']
         elif 'nb_epoch' in self.params:
             self.inner_total = self.params['nb_epoch']
         else:
-            self.mode = 1 #steps
+            self.mode = 1  # steps
             self.inner_total = self.params['steps']
         if self.show_inner:
             self.tqdm_inner = self.build_tqdm_inner(desc=desc, total=self.inner_total)
@@ -99,7 +99,7 @@ class TQDMCallback(Callback):
             # set miniters and mininterval to 0 so last update displays
             self.tqdm_inner.miniters = 0
             self.tqdm_inner.mininterval = 0
-            self.tqdm_inner.update(self.inner_total-self.tqdm_inner.n)
+            self.tqdm_inner.update(self.inner_total - self.tqdm_inner.n)
             self.tqdm_inner.close()
         if self.show_outer:
             self.tqdm_outer.update(1)

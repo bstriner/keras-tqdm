@@ -48,7 +48,7 @@ def mnist_model(verbose=1, callbacks=[]):
 def mnist_generator(n):
     (xtrain, ytrain), (xtest, ytest) = mnist_data()
     while True:
-        idx = np.random.random_integers(0, xtrain.shape[0]-1, (n,))
+        idx = np.random.random_integers(0, xtrain.shape[0] - 1, (n,))
         yield xtrain[idx, ...], ytrain[idx, ...]
 
 
