@@ -10,11 +10,11 @@ def build_model():
     hidden_dim = 512
     h = x
     h = Dense(hidden_dim)(h)
-    h = BatchNormalization(mode=0)(h)
+    h = BatchNormalization()(h)
     h = LeakyReLU(0.2)(h)
     h = Dropout(0.5)(h)
     h = Dense(hidden_dim / 2)(h)
-    h = BatchNormalization(mode=0)(h)
+    h = BatchNormalization()(h)
     h = LeakyReLU(0.2)(h)
     h = Dropout(0.5)(h)
     h = Dense(10)(h)
@@ -36,8 +36,24 @@ def mnist_data():
 def mnist_model(verbose=1, callbacks=[]):
     m = build_model()
     (xtrain, ytrain), (xtest, ytest) = mnist_data()
-    m.fit(xtrain, ytrain, validation_data=(xtest, ytest), nb_epoch=10, batch_size=32, verbose=verbose,
+    m.fit(xtrain, ytrain, validation_data=(xtest, ytest), epochs=10, batch_size=32, verbose=verbose,
           callbacks=callbacks)
+
+
+def mnist_generator(n):
+    (xtrain, ytrain), (xtest, ytest) = mnist_data()
+    while True:
+        idx = np.random.random_integers(0, xtrain.shape[0], (n,))
+        yield xtrain[idx, ...], ytrain[idx, ...]
+
+
+def mnist_model_generator(verbose=1, callbacks=[]):
+    m = build_model()
+    (xtrain, ytrain), (xtest, ytest) = mnist_data()
+
+    m.fit_generator(mnist_generator(32), validation_data=(xtest, ytest), epochs=10, steps_per_epoch=128,
+                    verbose=verbose,
+                    callbacks=callbacks)
 
 
 if __name__ == "__main__":
