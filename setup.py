@@ -3,12 +3,12 @@ from setuptools import setup, find_packages
 long_description = open('README.rst').read()
 
 setup(name='keras_tqdm',
-      version='1.0.7',
+      version='2.0.0',
       install_requires=['Keras', 'tqdm'],
       author="Ben Striner",
       author_email="bstriner@gmail.com",
       url="https://github.com/bstriner/keras-tqdm",
-      download_url='https://github.com/bstriner/keras-tqdm/tarball/v1.0.7',
+      download_url='https://github.com/bstriner/keras-tqdm/tarball/v2.0.0',
       description="Keras models with TQDM progress bars in Jupyter notebooks",
       long_description=long_description,
       keywords=['keras', 'tqdm', 'progress', 'progressbar', 'ipython', 'jupyter'],
