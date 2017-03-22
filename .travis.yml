@@ -33,7 +33,7 @@ install:
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib pandas pytest h5py
   - source activate test-environment
   - pip install git+git://github.com/Theano/Theano.git
-
+  - pip install pytest-pep8
   # install PIL for preprocessing tests
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
       conda install pil;
@@ -46,7 +46,6 @@ install:
   # install TensorFlow
   - pip install tensorflow
   - pip install tqdm
-  - pip install theano
   - if [[ "$LEGACY_KERAS" == "1" ]]; then
       pip install keras==1.2.2;
     else
@@ -63,7 +62,7 @@ script:
   - sed -i -e 's/"backend":[[:space:]]*"[^"]*/"backend":\ "'$KERAS_BACKEND'/g' ~/.keras/keras.json;
   - echo -e "Running tests with the following config:\n$(cat ~/.keras/keras.json)"
   - if [[ "$TEST_MODE" == "PEP8" ]]; then
-       PYTHONPATH=$PWD:$PYTHONPATH py.test --pep8 -m pep8 -n0;
+       PYTHONPATH=$PWD:$PYTHONPATH py.test --pep8 -m pep8;
     else
        PYTHONPATH=$PWD:$PYTHONPATH py.test tests/;
     fi
