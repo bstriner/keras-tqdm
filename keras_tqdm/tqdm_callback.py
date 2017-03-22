@@ -45,7 +45,7 @@ class TQDMCallback(Callback):
         self.tqdm_inner = None
         self.epoch = None
         self.running_logs = None
-        self.batch_count = None
+        self.inner_count = None
 
     def tqdm(self, desc, total, leave):
         """
@@ -78,14 +78,17 @@ class TQDMCallback(Callback):
     def on_epoch_begin(self, epoch, logs={}):
         self.epoch = epoch
         desc = self.inner_description_initial.format(epoch=self.epoch)
-        if 'steps' in self.params:
-            self.batch_count = self.params['steps']
-        elif 'samples' in self.params:
-            self.batch_count = int(ceil(self.params['samples'] / self.params['batch_size']))
+        self.mode = 0 #samples
+        if 'samples' in self.params:
+            self.inner_total = self.params['samples']
+        elif 'nb_epoch' in self.params:
+            self.inner_total = self.params['nb_epoch']
         else:
-            self.batch_count = int(ceil(self.params['nb_sample'] / self.params['batch_size']))
+            self.mode = 1 #steps
+            self.inner_total = self.params['steps']
         if self.show_inner:
-            self.tqdm_inner = self.build_tqdm_inner(desc=desc, total=self.batch_count)
+            self.tqdm_inner = self.build_tqdm_inner(desc=desc, total=self.inner_total)
+        self.inner_count = 0
         self.running_logs = {}
 
     def on_epoch_end(self, epoch, logs={}):
@@ -96,7 +99,7 @@ class TQDMCallback(Callback):
             # set miniters and mininterval to 0 so last update displays
             self.tqdm_inner.miniters = 0
             self.tqdm_inner.mininterval = 0
-            self.tqdm_inner.update(1)
+            self.tqdm_inner.update(self.inner_total-self.tqdm_inner.n)
             self.tqdm_inner.close()
         if self.show_outer:
             self.tqdm_outer.update(1)
@@ -105,13 +108,18 @@ class TQDMCallback(Callback):
         pass
 
     def on_batch_end(self, batch, logs={}):
-        if batch < self.batch_count - 1:
+        if self.mode == 0:
+            update = logs['size']
+        else:
+            update = 1
+        self.inner_count += update
+        if self.inner_count < self.inner_total:
             self.append_logs(logs)
             metrics = self.format_metrics(self.running_logs)
             desc = self.inner_description_update.format(epoch=self.epoch, metrics=metrics)
             if self.show_inner:
                 self.tqdm_inner.desc = desc
-                self.tqdm_inner.update(1)
+                self.tqdm_inner.update(update)
 
     def on_train_begin(self, logs={}):
         if self.show_outer:

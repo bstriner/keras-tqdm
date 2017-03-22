@@ -3,6 +3,7 @@ from keras.models import Model
 from keras.layers import Dropout, BatchNormalization, LeakyReLU, Dense, Input, Activation
 import numpy as np
 from keras.utils.np_utils import to_categorical
+import keras
 
 
 def build_model():
@@ -36,14 +37,18 @@ def mnist_data():
 def mnist_model(verbose=1, callbacks=[]):
     m = build_model()
     (xtrain, ytrain), (xtest, ytest) = mnist_data()
-    m.fit(xtrain, ytrain, validation_data=(xtest, ytest), epochs=10, batch_size=32, verbose=verbose,
-          callbacks=callbacks)
+    if int(keras.__version__.split(".")[0]) == 2:
+        m.fit(xtrain, ytrain, validation_data=(xtest, ytest), epochs=10, batch_size=32, verbose=verbose,
+              callbacks=callbacks)
+    else:
+        m.fit(xtrain, ytrain, validation_data=(xtest, ytest), nb_epoch=10, batch_size=32, verbose=verbose,
+              callbacks=callbacks)
 
 
 def mnist_generator(n):
     (xtrain, ytrain), (xtest, ytest) = mnist_data()
     while True:
-        idx = np.random.random_integers(0, xtrain.shape[0], (n,))
+        idx = np.random.random_integers(0, xtrain.shape[0]-1, (n,))
         yield xtrain[idx, ...], ytrain[idx, ...]
 
 
@@ -51,9 +56,14 @@ def mnist_model_generator(verbose=1, callbacks=[]):
     m = build_model()
     (xtrain, ytrain), (xtest, ytest) = mnist_data()
 
-    m.fit_generator(mnist_generator(32), validation_data=(xtest, ytest), epochs=10, steps_per_epoch=128,
-                    verbose=verbose,
-                    callbacks=callbacks)
+    if int(keras.__version__.split(".")[0]) == 2:
+        m.fit_generator(mnist_generator(32), validation_data=(xtest, ytest), epochs=10, steps_per_epoch=32 * 20,
+                        verbose=verbose,
+                        callbacks=callbacks)
+    else:
+        m.fit_generator(mnist_generator(32), validation_data=(xtest, ytest), nb_epoch=10, samples_per_epoch=32 * 20,
+                        verbose=verbose,
+                        callbacks=callbacks)
 
 
 if __name__ == "__main__":
