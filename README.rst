@@ -92,6 +92,9 @@ Set ``verbose=0`` to suppress the default progress bar.
 
 For IPython and Jupyter notebook ``TQDMNotebookCallback`` instead of ``TQDMCallback``. Use ``tqdm_notebook`` in your own code instead of ``tqdm``.
 
+Formatting is controlled by python format strings. The default `metric_format` is `"{name}: {value:0.3f}"`.
+ For example, use  `TQDMCallback(metric_format="{name}: {value:0.6f}")` for 6 decimal points or `{name}: {value:e}` for scientific notation.
+
 Questions?
 ----------
 
