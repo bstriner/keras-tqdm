@@ -81,8 +81,8 @@ class TQDMCallback(Callback):
         self.mode = 0  # samples
         if 'samples' in self.params:
             self.inner_total = self.params['samples']
-        elif 'nb_epoch' in self.params:
-            self.inner_total = self.params['nb_epoch']
+        elif 'nb_sample' in self.params:
+            self.inner_total = self.params['nb_sample']
         else:
             self.mode = 1  # steps
             self.inner_total = self.params['steps']
