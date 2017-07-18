@@ -16,7 +16,8 @@ class TQDMCallback(Callback):
                  leave_outer=True,
                  show_inner=True,
                  show_outer=True,
-                 output_file=stderr):
+                 output_file=stderr,
+                 initial = 0):
         """
         Construct a callback that will create and update progress bars.
 
@@ -30,6 +31,7 @@ class TQDMCallback(Callback):
         :param show_inner: False to hide inner bars
         :param show_outer: False to hide outer bar
         :param output_file: output file (default sys.stderr)
+        :param initial: Initial counter state 
         """
         self.outer_description = outer_description
         self.inner_description_initial = inner_description_initial
@@ -46,16 +48,18 @@ class TQDMCallback(Callback):
         self.epoch = None
         self.running_logs = None
         self.inner_count = None
+        self.initial = initial
 
-    def tqdm(self, desc, total, leave):
+    def tqdm(self, desc, total, leave, initial=0):
         """
         Extension point. Override to provide custom options to tqdm initializer.
         :param desc: Description string
         :param total: Total number of updates
         :param leave: Leave progress bar when done
+        :param initial: Initial counter state
         :return: new progress bar
         """
-        return tqdm(desc=desc, total=total, leave=leave, file=self.output_file)
+        return tqdm(desc=desc, total=total, leave=leave, file=self.output_file, initial=initial)
 
     def build_tqdm_outer(self, desc, total):
         """
@@ -64,7 +68,7 @@ class TQDMCallback(Callback):
         :param total: Number of epochs
         :return: new progress bar
         """
-        return self.tqdm(desc=desc, total=total, leave=self.leave_outer)
+        return self.tqdm(desc=desc, total=total, leave=self.leave_outer, initial=self.initial)
 
     def build_tqdm_inner(self, desc, total):
         """
