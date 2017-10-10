@@ -1,9 +1,9 @@
-from keras.datasets import mnist
-from keras.models import Model
-from keras.layers import Dropout, BatchNormalization, LeakyReLU, Dense, Input, Activation
-import numpy as np
-from keras.utils.np_utils import to_categorical
 import keras
+import numpy as np
+from keras.datasets import mnist
+from keras.layers import Dropout, BatchNormalization, LeakyReLU, Dense, Input, Activation
+from keras.models import Model
+from keras.utils.np_utils import to_categorical
 
 
 def build_model():
