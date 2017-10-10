@@ -1,9 +1,9 @@
+from sys import stderr
+
+import numpy as np
+import six
 from keras.callbacks import Callback
 from tqdm import tqdm
-from sys import stderr
-from math import ceil
-import six
-import numpy as np
 
 
 class TQDMCallback(Callback):
@@ -17,7 +17,7 @@ class TQDMCallback(Callback):
                  show_inner=True,
                  show_outer=True,
                  output_file=stderr,
-                 initial = 0):
+                 initial=0):
         """
         Construct a callback that will create and update progress bars.
 

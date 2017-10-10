@@ -1,6 +1,8 @@
-from tqdm import tqdm_notebook
-from .tqdm_callback import TQDMCallback
 import sys
+
+from tqdm import tqdm_notebook
+
+from .tqdm_callback import TQDMCallback
 
 
 class TQDMNotebookCallback(TQDMCallback):

@@ -1,9 +1,9 @@
-from keras_tqdm import TQDMCallback
-from keras.models import Sequential
-from keras.layers import Dense
 import keras
-import pytest
 import numpy as np
+import pytest
+from keras.layers import Dense
+from keras.models import Sequential
+from keras_tqdm import TQDMCallback
 
 
 def fit_generator_test():
