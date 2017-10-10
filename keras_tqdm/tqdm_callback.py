@@ -31,7 +31,7 @@ class TQDMCallback(Callback):
         :param show_inner: False to hide inner bars
         :param show_outer: False to hide outer bar
         :param output_file: output file (default sys.stderr)
-        :param initial: Initial counter state 
+        :param initial: Initial counter state
         """
         self.outer_description = outer_description
         self.inner_description_initial = inner_description_initial
