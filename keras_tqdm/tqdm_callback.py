@@ -59,7 +59,7 @@ class TQDMCallback(Callback):
         :param initial: Initial counter state
         :return: new progress bar
         """
-        return tqdm(desc=desc, total=total, leave=leave, file=self.output_file, initial=initial)
+        return tqdm(desc=desc, total=total, leave=leave, unit="epoch", file=self.output_file, initial=initial)
 
     def build_tqdm_outer(self, desc, total):
         """
