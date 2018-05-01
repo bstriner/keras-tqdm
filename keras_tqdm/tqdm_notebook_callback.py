@@ -35,4 +35,4 @@ class TQDMNotebookCallback(TQDMCallback):
         :return: new progress bar
         :param initial: Initial counter state
         """
-        return tqdm_notebook(desc=desc, total=total, leave=leave, initial=initial)
+        return tqdm_notebook(desc=desc, total=total, unit="epoch", leave=leave, initial=initial)
