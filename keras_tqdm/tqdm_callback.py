@@ -83,9 +83,9 @@ class TQDMCallback(Callback):
         self.epoch = epoch
         desc = self.inner_description_initial.format(epoch=self.epoch)
         self.mode = 0  # samples
-        if 'samples' in self.params:
+        if 'samples' in self.params and self.params['samples'] is not None:
             self.inner_total = self.params['samples']
-        elif 'nb_sample' in self.params:
+        elif 'nb_sample' in self.params and self.params['nb_samples'] is not None:
             self.inner_total = self.params['nb_sample']
         else:
             self.mode = 1  # steps
