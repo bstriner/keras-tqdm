@@ -111,6 +111,12 @@ class TQDMCallback(Callback):
     def on_batch_begin(self, batch, logs={}):
         pass
 
+    def on_train_batch_begin(self, batch, logs={}):
+        pass
+
+    def on_train_batch_end(self, batch, logs={}):
+        self.on_batch_end(batch, logs)
+
     def on_batch_end(self, batch, logs={}):
         if self.mode == 0:
             update = logs['size']
