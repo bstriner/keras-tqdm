@@ -2,7 +2,7 @@ from sys import stderr
 
 import numpy as np
 import six
-from keras.callbacks import Callback
+from tensorflow.keras.callbacks import Callback
 from tqdm import tqdm
 
 
